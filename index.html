@@ -2,1087 +2,757 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Home - LITOS - Rekindle your mind</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Happy Birthday, Beena Pinto Ma'am 🎂</title>
+
+    <!-- Premium Fonts: Cormorant Garamond (display) + DM Sans (body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ── Variables ── */
+        :root {
+            --gold:       #d4af37;
+            --gold-light: #f0d060;
+            --gold-pale:  #f5e6b0;
+            --gold-dark:  #a07828;
+            --bg:         #04060e;
+            --bg-card:    rgba(10,13,24,0.65);
+            --text:       #e0d8c8;
+            --muted:      #a09880;
+            --border:     rgba(212,175,55,0.18);
         }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #FFF9F0;
-            color: #2C2418;
-            line-height: 1.6;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
             overflow-x: hidden;
+            color: var(--text);
+            cursor: none;
         }
 
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 40px;
+        /* ── Custom Cursor ── */
+        .cur {
+            position:fixed; width:30px; height:30px;
+            border:1.5px solid rgba(212,175,55,0.55);
+            border-radius:50%; pointer-events:none; z-index:99999;
+            transform:translate(-50%,-50%);
+            transition:width .22s,height .22s,background .22s,border-color .22s;
+            backdrop-filter:blur(2px);
+        }
+        .cur.h { width:50px; height:50px; background:rgba(212,175,55,0.07); border-color:var(--gold); }
+        .cur-dot {
+            position:fixed; width:5px; height:5px;
+            background:var(--gold); border-radius:50%;
+            pointer-events:none; z-index:100000;
+            transform:translate(-50%,-50%);
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 24px;
-            }
+        /* ── Loader ── */
+        #loader {
+            position:fixed; inset:0; background:#020408; z-index:99998;
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.8rem;
+        }
+        .l-ring {
+            width:60px; height:60px;
+            border:1px solid rgba(212,175,55,0.15);
+            border-top:1.5px solid var(--gold);
+            border-radius:50%; animation:spin 1s linear infinite;
+        }
+        .l-text {
+            font-family:'Cormorant Garamond',serif;
+            font-size:.75rem; letter-spacing:5px;
+            text-transform:uppercase; color:var(--gold); font-weight:300;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ── Cinematic Intro ── */
+        #intro {
+            position:fixed; inset:0; background:#02040a; z-index:99997;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .i-wrap { text-align:center; }
+        .i-phrase {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(1.4rem,4.5vw,2.8rem);
+            font-weight:300; letter-spacing:8px;
+            color:var(--text); opacity:0; transform:translateY(18px);
+        }
+        .i-bar { width:0; height:1px; background:var(--gold); margin:1.1rem auto; opacity:0; }
+        .i-bday {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(2rem,6vw,4rem); font-weight:500;
+            background:linear-gradient(135deg,var(--gold-pale),var(--gold),var(--gold-dark));
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            opacity:0; letter-spacing:3px;
         }
 
-        /* Typography */
-        h1, h2, h3, h4, .logo {
-            font-family: 'Playfair Display', serif;
+        /* ── Background ── */
+        #pCanvas { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.55; }
+        .lray {
+            position:fixed; width:150%; height:200%;
+            background:linear-gradient(90deg,transparent,rgba(212,175,55,.025),rgba(255,215,0,.04),rgba(212,175,55,.025),transparent);
+            transform:rotate(28deg); pointer-events:none; z-index:1;
+            animation:rayDrift 22s linear infinite;
         }
+        .lray:nth-child(2) { animation-delay:-8s; opacity:.5; }
+        .lray:nth-child(3) { animation-delay:-15s; }
+        @keyframes rayDrift { from{transform:translateX(-60%) rotate(28deg);} to{transform:translateX(60%) rotate(28deg);} }
 
-        h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #2F241B;
-            letter-spacing: -0.02em;
-            position: relative;
-            display: inline-block;
-        }
+        /* ── Page ── */
+        .page { position:relative; z-index:10; }
+        section { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:5rem 2rem; position:relative; }
+        .container { max-width:1280px; width:100%; margin:0 auto; }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 64px;
+        /* ── Shared Typography ── */
+        .sec-tag {
+            display:block; font-size:.72rem; letter-spacing:5px;
+            text-transform:uppercase; color:var(--gold); font-weight:400; margin-bottom:.8rem;
         }
+        .sec-title {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(2.2rem,5vw,3.4rem); font-weight:400;
+            text-align:center; line-height:1.15;
+        }
+        .sec-title em { font-style:normal; color:var(--gold); }
 
-        .section-header h2 {
-            margin-bottom: 20px;
+        /* ── Gold Divider ── */
+        .divider {
+            display:flex; align-items:center; gap:1rem;
+            margin:3.5rem auto; max-width:280px;
         }
+        .divider span { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+        .divider i { color:var(--gold); font-size:.6rem; }
 
-        .section-header h2:after {
-            content: '';
-            position: absolute;
-            bottom: -16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, #E6B17E, #C47D4A, #E6B17E);
-            border-radius: 4px;
-        }
+        /* ════ HERO ════ */
+        .hero { background:radial-gradient(ellipse at 50% 0%,rgba(12,18,40,.7),var(--bg) 70%); }
 
-        .section-header p {
-            color: #8B7355;
-            font-size: 1.15rem;
-            margin-top: 32px;
+        .glass {
+            background:var(--bg-card); backdrop-filter:blur(22px);
+            border-radius:2rem; border:1px solid var(--border);
+            box-shadow:0 40px 80px rgba(0,0,0,.5),inset 0 0 0 .5px rgba(212,175,55,.08);
+            padding:3.5rem; transition:box-shadow .5s;
         }
-
-        /* Buttons */
-        .btn-primary {
-            display: inline-block;
-            background: linear-gradient(135deg, #E6B17E 0%, #C47D4A 100%);
-            color: #FFF9F0;
-            font-weight: 700;
-            padding: 14px 38px;
-            border-radius: 60px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 8px 20px rgba(196, 125, 74, 0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(196, 125, 74, 0.4);
-            background: linear-gradient(135deg, #DBA16C 0%, #B56A3A 100%);
-        }
-
-        .btn-outline {
-            display: inline-block;
-            background: transparent;
-            border: 2px solid #E6B17E;
-            color: #C47D4A;
-            font-weight: 600;
-            padding: 12px 34px;
-            border-radius: 60px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .btn-outline:hover {
-            background: #E6B17E;
-            color: #FFF9F0;
-            transform: translateY(-2px);
-        }
-
-        /* Navigation */
-        .navbar {
-            padding: 24px 0;
-            background: rgba(255, 249, 240, 0.96);
-            backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #F0E4D4;
-        }
-
-        .nav-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #2F241B;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            color: #C47D4A;
-            font-weight: 800;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 42px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            font-weight: 600;
-            color: #5E4A34;
-            transition: 0.25s;
-            font-size: 0.95rem;
-        }
-
-        .nav-links a:hover {
-            color: #C47D4A;
-        }
-
-        @media (max-width: 768px) {
-            .nav-flex {
-                flex-direction: column;
-                gap: 16px;
-            }
-            .nav-links {
-                gap: 28px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-
-        /* Hero Section - Color Dominant */
-        .hero {
-            padding: 80px 0 100px;
-            background: linear-gradient(135deg, #FFF9F0 0%, #FEEBD8 50%, #FFE4CE 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero:before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -10%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(230, 177, 126, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .hero:after {
-            content: '';
-            position: absolute;
-            bottom: -20%;
-            left: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(196, 125, 74, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
+        .glass:hover { box-shadow:0 50px 100px rgba(0,0,0,.6),inset 0 0 0 1px rgba(212,175,55,.15); }
 
         .hero-grid {
-            display: flex;
-            align-items: center;
-            gap: 60px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-content {
-            flex: 1.2;
-        }
-
-        .hero-content .welcome-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #E6B17E, #C47D4A);
-            padding: 8px 24px;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: #FFF9F0;
-            margin-bottom: 28px;
-            box-shadow: 0 4px 12px rgba(196, 125, 74, 0.3);
-        }
-
-        .hero-content h1 {
-            font-size: 3.8rem;
-            line-height: 1.2;
-            margin-bottom: 28px;
-            color: #2F241B;
-            font-weight: 700;
-        }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            color: #6B543C;
-            margin-bottom: 40px;
-            max-width: 90%;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .hero-visual {
-            flex: 0.8;
-            background: linear-gradient(145deg, #F6E4D2, #F0DCC6);
-            border-radius: 50px;
-            height: 440px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 30px 45px -20px rgba(0, 0, 0, 0.2);
-        }
-
-        .hero-visual:before {
-            content: '🧘';
-            font-size: 8rem;
-            opacity: 0.3;
-            position: absolute;
-        }
-
-        .hero-visual:after {
-            content: '';
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            border: 3px solid rgba(196, 125, 74, 0.4);
-            border-radius: 50%;
-            animation: pulse 3s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 0.6; }
-            100% { transform: scale(1.4); opacity: 0; }
-        }
-
-        @media (max-width: 968px) {
-            .hero-content h1 { font-size: 2.5rem; }
-            .hero-grid { flex-direction: column; }
-            .hero-content p { max-width: 100%; }
-            .hero-visual { width: 100%; height: 320px; }
-        }
-
-        /* Mission Vision Cards - Warm & Inviting */
-        .mission-vision {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #FFFFFF, #FFFBF5);
-        }
-
-        .mv-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 48px;
-        }
-
-        .mv-card {
-            background: linear-gradient(145deg, #FFFFFF, #FFFCF8);
-            padding: 52px 44px;
-            border-radius: 40px;
-            transition: all 0.4s ease;
-            border: 1px solid #F2E4D4;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
-        }
-
-        .mv-card:hover {
-            transform: translateY(-8px);
-            border-color: #E6B17E;
-            box-shadow: 0 25px 45px -15px rgba(196, 125, 74, 0.2);
-        }
-
-        .mv-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #FEF0E4, #FCE6D4);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-        }
-
-        .mv-icon i {
-            font-size: 2.2rem;
-            color: #C47D4A;
-        }
-
-        .mv-card h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #2F241B;
-            font-weight: 700;
-        }
-
-        .mv-card p {
-            color: #6B543C;
-            line-height: 1.7;
-        }
-
-        @media (max-width: 768px) {
-            .mv-grid {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-            .mv-card {
-                padding: 40px 32px;
-            }
-        }
-
-        /* Services Section */
-        .services {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #FFF9F0, #FFF5EA);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 35px;
-        }
-
-        .service-card {
-            background: #FFFFFF;
-            border-radius: 32px;
-            padding: 44px 32px;
-            text-align: center;
-            transition: all 0.4s ease;
-            border: 1px solid #F2E4D4;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            border-color: #E6B17E;
-            box-shadow: 0 30px 45px -15px rgba(196, 125, 74, 0.25);
-        }
-
-        .service-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #FEF0E4, #FCE6D4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 28px;
-        }
-
-        .service-icon i {
-            font-size: 2.5rem;
-            color: #C47D4A;
-        }
-
-        .service-card h3 {
-            font-size: 1.7rem;
-            margin-bottom: 16px;
-            color: #2F241B;
-            font-weight: 700;
-        }
-
-        .service-card p {
-            color: #6B543C;
-            line-height: 1.6;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #FEF0E4, #FCEADB);
-        }
-
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px;
-        }
-
-        .testimonial-card {
-            background: #FFFFFF;
-            border-radius: 32px;
-            padding: 44px;
-            transition: all 0.3s ease;
-            border: 1px solid #F2E4D4;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(196, 125, 74, 0.2);
-            border-color: #E6B17E;
-        }
-
-        .quote-icon {
-            color: #E6B17E;
-            font-size: 2.2rem;
-            opacity: 0.5;
-            margin-bottom: 24px;
-        }
-
-        .testimonial-card p {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #4A3828;
-            margin-bottom: 28px;
-        }
-
-        .client-name {
-            font-weight: 800;
-            color: #C47D4A;
-            font-size: 1rem;
-        }
-
-        /* Blog Section with Feature Images */
-        .blog {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #FFF9F0, #FFF5EA);
-        }
-
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-        }
-
-        .blog-card {
-            background: #FFFFFF;
-            border-radius: 32px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
-            border: 1px solid #F2E4D4;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 45px -15px rgba(196, 125, 74, 0.3);
-            border-color: #E6B17E;
-        }
-
-        .blog-image {
-            height: 220px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .blog-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .blog-card:hover .blog-image img {
-            transform: scale(1.05);
-        }
-
-        .blog-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.4));
-            padding: 20px;
-        }
-
-        .blog-category {
-            display: inline-block;
-            background: linear-gradient(135deg, #E6B17E, #C47D4A);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 30px;
-            letter-spacing: 1px;
-        }
-
-        .blog-content {
-            padding: 28px 28px 32px;
-        }
-
-        .blog-content h4 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #2F241B;
-            margin-bottom: 16px;
-            line-height: 1.5;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .blog-link {
-            color: #C47D4A;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-            transition: gap 0.3s;
-        }
-
-        .blog-link:hover {
-            gap: 12px;
-            color: #B56A3A;
-        }
-
-        /* Clients Section */
-        .clients {
-            padding: 90px 0;
-            background: linear-gradient(135deg, #FEF0E4, #FCEADB);
-            text-align: center;
-        }
-
-        .clients-grid {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 55px;
-            flex-wrap: wrap;
-            margin-top: 55px;
-        }
-
-        .client-icon {
-            font-size: 3rem;
-            color: #C47D4A;
-            opacity: 0.7;
-            transition: all 0.3s;
-        }
-
-        .client-icon:hover {
-            opacity: 1;
-            transform: scale(1.1);
-            color: #E6B17E;
-        }
-
-        /* Outcomes Section */
-        .outcomes {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #2F241B, #1F1812);
-            color: #FFF9F0;
-        }
-
-        .outcomes .section-header h2 {
-            color: #FFF9F0;
-        }
-
-        .outcomes .section-header h2:after {
-            background: linear-gradient(90deg, #E6B17E, #C47D4A, #E6B17E);
-        }
-
-        .metrics-row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 45px;
-            margin: 65px 0 75px;
-        }
-
-        .metric {
-            text-align: center;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .metric-number {
-            font-size: 3.5rem;
-            font-weight: 800;
-            font-family: 'Playfair Display', serif;
-            color: #E6B17E;
-            margin-bottom: 10px;
-        }
-
-        .metric-label {
-            font-size: 0.9rem;
-            color: #D4C2AE;
-        }
-
-        .outcomes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 35px;
-            margin-top: 45px;
-        }
-
-        .outcome-card {
-            background: rgba(255, 249, 240, 0.08);
-            border-radius: 28px;
-            padding: 40px 32px;
-            transition: 0.3s;
-            border: 1px solid rgba(230, 177, 126, 0.25);
-        }
-
-        .outcome-card:hover {
-            background: rgba(255, 249, 240, 0.12);
-            border-color: rgba(230, 177, 126, 0.5);
-            transform: translateY(-5px);
-        }
-
-        .outcome-card i {
-            font-size: 2.2rem;
-            color: #E6B17E;
-            margin-bottom: 22px;
-        }
-
-        .outcome-card h4 {
-            font-size: 1.5rem;
-            margin-bottom: 18px;
-            font-weight: 700;
-        }
-
-        .outcome-card p {
-            font-size: 0.95rem;
-            color: #D4C2AE;
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 0;
-            text-align: center;
-            background: linear-gradient(135deg, #FFF9F0, #FFF2E6);
-        }
-
-        .cta-section h3 {
-            font-size: 2.3rem;
-            font-family: 'Playfair Display', serif;
-            color: #2F241B;
-            font-weight: 700;
-            margin-bottom: 35px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Footer */
-        footer {
-            background: #1F1812;
-            color: #B8A690;
-            padding: 65px 0 45px;
-            text-align: center;
-        }
-
-        .footer-links {
-            margin-bottom: 35px;
-        }
-
-        .footer-links a {
-            color: #E6B17E;
-            text-decoration: none;
-            margin: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-            color: #C47D4A;
-        }
-
-        .footer-copyright {
-            font-size: 0.85rem;
-            color: #9A866E;
-        }
-
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #E6B17E, #C47D4A);
-            color: #FFF9F0;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s;
-            z-index: 999;
-            box-shadow: 0 6px 18px rgba(196, 125, 74, 0.4);
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, #DBA16C, #B56A3A);
+            display:grid; grid-template-columns:1fr 1.3fr; gap:4rem; align-items:center;
+        }
+
+        /* Portrait */
+        .p-wrap { perspective:1200px; }
+        .portrait {
+            position:relative; border-radius:1.5rem; overflow:hidden;
+            transform-style:preserve-3d; transition:transform .25s ease;
+        }
+        .portrait img {
+            width:100%; display:block;
+            filter:brightness(1.03) contrast(1.04) saturate(1.06);
+            transition:filter .5s;
+        }
+        .portrait:hover img { filter:brightness(1.06) contrast(1.06); }
+        .p-overlay {
+            position:absolute; inset:0;
+            background:radial-gradient(ellipse at 50% 80%,rgba(212,175,55,.12),transparent 65%);
+            pointer-events:none;
+        }
+        .p-ring {
+            position:absolute; inset:-2px; border-radius:1.6rem;
+            background:linear-gradient(135deg,rgba(212,175,55,.4),transparent 50%,rgba(212,175,55,.2));
+            pointer-events:none; z-index:2; opacity:0; transition:opacity .5s;
+        }
+        .portrait:hover .p-ring { opacity:1; }
+
+        /* Birthday Badge */
+        .bday-badge {
+            display:inline-flex; align-items:center; gap:.6rem;
+            background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.3);
+            border-radius:100px; padding:.45rem 1.2rem;
+            font-size:.76rem; letter-spacing:3px; text-transform:uppercase;
+            color:var(--gold); margin-bottom:1.6rem;
+        }
+        .bday-badge i { animation:bdayPulse 2s ease infinite; }
+        @keyframes bdayPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+
+        /* HB line */
+        .hb-row { display:flex; align-items:center; gap:.8rem; margin-bottom:.4rem; }
+        .hb-text {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(1.1rem,2.5vw,1.5rem);
+            font-weight:300; font-style:italic; color:var(--gold-pale); letter-spacing:2px;
+            white-space:nowrap;
+        }
+        .hb-bar { flex:1; height:1px; background:linear-gradient(90deg,var(--gold),transparent); }
+
+        .hero-name {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(3rem,7vw,5.8rem); font-weight:500;
+            background:linear-gradient(145deg,var(--gold-pale) 0%,var(--gold) 50%,var(--gold-dark) 100%);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            line-height:1.05; letter-spacing:-.02em;
+        }
+        .ceo-tag {
+            font-size:.8rem; font-weight:300; letter-spacing:2px;
+            color:var(--muted); border-left:2px solid var(--gold);
+            padding-left:.9rem; margin:.7rem 0 1.8rem;
+        }
+        .wish-p {
+            font-size:1rem; font-weight:300; line-height:1.85;
+            color:#c0b8a4; margin-bottom:1.8rem;
+        }
+
+        /* Quote block */
+        .q-block {
+            border-left:2px solid var(--gold); padding:.8rem 1.5rem;
+            background:rgba(212,175,55,.04); border-radius:0 .5rem .5rem 0;
+            margin-bottom:1.8rem;
+        }
+        .q-block p {
+            font-family:'Cormorant Garamond',serif;
+            font-size:1.12rem; font-style:italic; font-weight:300;
+            color:#ddd5be; line-height:1.6; transition:opacity .4s;
+        }
+
+        /* CTA Button */
+        .cta {
+            display:inline-flex; align-items:center; gap:.7rem;
+            background:transparent; border:1px solid rgba(212,175,55,.45);
+            border-radius:.4rem; padding:.95rem 2rem;
+            font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:400;
+            letter-spacing:2.5px; text-transform:uppercase;
+            color:var(--gold); cursor:pointer;
+            position:relative; overflow:hidden;
+            transition:border-color .4s,background .4s;
+        }
+        .cta::before {
+            content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+            background:linear-gradient(90deg,transparent,rgba(212,175,55,.15),transparent);
+            transition:left .55s;
+        }
+        .cta:hover::before { left:100%; }
+        .cta:hover { border-color:var(--gold); background:rgba(212,175,55,.06); }
+
+        /* ════ LEGACY ════ */
+        .legacy { background:linear-gradient(180deg,var(--bg),#060a18); }
+        .pillars {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:1.8rem; margin-top:3rem;
+        }
+        .pillar {
+            background:rgba(12,15,26,.65); border:1px solid var(--border);
+            border-radius:1.2rem; padding:2.2rem 1.8rem; text-align:center;
+            transition:border-color .4s,transform .4s,box-shadow .4s;
+            position:relative; overflow:hidden;
+        }
+        .pillar::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            opacity:0; transition:opacity .4s;
+        }
+        .pillar:hover { border-color:rgba(212,175,55,.35); transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,.3); }
+        .pillar:hover::before { opacity:1; }
+        .p-icon {
+            width:52px; height:52px; border-radius:50%;
+            background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.2);
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto 1.1rem; font-size:1.2rem; color:var(--gold);
+            transition:background .4s;
+        }
+        .pillar:hover .p-icon { background:rgba(212,175,55,.15); }
+        .pillar h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:500; margin-bottom:.7rem; }
+        .pillar p  { font-size:.87rem; font-weight:300; line-height:1.65; color:var(--muted); }
+
+        /* ════ VOICES ════ */
+        .voices { background:linear-gradient(180deg,#060a18,#04070f); }
+        .voices-grid {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:1.8rem; margin-top:3rem;
+        }
+        .v-card {
+            background:rgba(8,11,20,.7); border:1px solid var(--border);
+            border-radius:1.2rem; padding:2rem;
+            transition:border-color .4s,transform .4s;
+        }
+        .v-card:hover { border-color:rgba(212,175,55,.3); transform:translateY(-4px); }
+        .qm {
+            font-family:'Cormorant Garamond',serif; font-size:5rem;
+            line-height:.5; color:rgba(212,175,55,.15); display:block; margin-bottom:.8rem;
+        }
+        .v-text {
+            font-size:.92rem; font-weight:300; font-style:italic;
+            line-height:1.75; color:#c5bfb0; margin-bottom:1.5rem;
+        }
+        .v-author { display:flex; align-items:center; gap:.7rem; }
+        .a-dot {
+            width:28px; height:28px; border-radius:50%;
+            background:rgba(212,175,55,.1); border:1px solid rgba(212,175,55,.3);
+            display:flex; align-items:center; justify-content:center;
+            font-size:.68rem; color:var(--gold); flex-shrink:0;
+        }
+        .a-name { font-size:.82rem; font-weight:500; color:var(--gold); }
+        .a-role { font-size:.75rem; font-weight:300; color:var(--muted); }
+
+        /* ════ CLOSING ════ */
+        .closing {
+            min-height:70vh; text-align:center; flex-direction:column;
+            background:radial-gradient(ellipse at 50% 100%,rgba(12,18,40,.6),var(--bg) 70%);
+        }
+        .cake-wrap { position:relative; width:80px; margin:0 auto 2.5rem; }
+        .cake-icon { font-size:3.5rem; display:block; animation:floatCake 3s ease-in-out infinite; }
+        @keyframes floatCake { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+        .c-glow {
+            position:absolute; top:-8px; left:50%; transform:translateX(-50%);
+            width:24px; height:24px;
+            background:radial-gradient(circle,rgba(255,200,50,.65),transparent 70%);
+            border-radius:50%; animation:glowP 1.3s ease infinite alternate;
+        }
+        @keyframes glowP { from{opacity:.5;transform:translateX(-50%) scale(1);} to{opacity:1;transform:translateX(-50%) scale(1.5);} }
+
+        .c-hb {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(2.8rem,7vw,5.5rem); font-weight:500;
+            background:linear-gradient(135deg,var(--gold-pale),var(--gold),var(--gold-dark));
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            letter-spacing:-.01em; line-height:1.1;
+        }
+        .c-name {
+            font-family:'Cormorant Garamond',serif;
+            font-size:clamp(1.5rem,3.5vw,2.4rem); font-weight:300;
+            font-style:italic; color:var(--muted); margin-top:.3rem;
+        }
+        .c-wish {
+            max-width:620px; margin:2rem auto;
+            font-size:1rem; font-weight:300; line-height:1.85; color:#b8b0a0;
+        }
+        .stars-row {
+            display:flex; align-items:center; justify-content:center;
+            gap:.6rem; margin:2.5rem auto 0;
+            font-size:.7rem; color:var(--gold);
+        }
+        .stars-row span {
+            font-size:.72rem; letter-spacing:2.5px;
+            text-transform:uppercase; color:#6a6350;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width:3px; }
+        ::-webkit-scrollbar-track { background:#080a12; }
+        ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:2px; }
+
+        /* ── Mobile ── */
+        @media (max-width:900px) {
+            .hero-grid { grid-template-columns:1fr; gap:2.5rem; }
+            .pillars, .voices-grid { grid-template-columns:1fr; }
+            .glass { padding:2rem; }
+            .cur, .cur-dot { display:none; }
+            body { cursor:auto; }
+            section { padding:3.5rem 1.4rem; }
+            .sec-title { font-size:1.9rem; }
+        }
+        @media (min-width:901px) and (max-width:1080px) {
+            .pillars { grid-template-columns:repeat(2,1fr); }
+            .voices-grid { grid-template-columns:repeat(3,1fr); }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="container nav-flex">
-        <a href="#" class="logo">LITOS<span>.</span></a>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </div>
-</nav>
+<!-- Cursor -->
+<div class="cur"     id="cur"></div>
+<div class="cur-dot" id="curDot"></div>
 
-<main>
-    <!-- Hero Section -->
+<!-- Loader -->
+<div id="loader">
+    <div class="l-ring"></div>
+    <div class="l-text">Preparing Something Special</div>
+</div>
+
+<!-- Cinematic Intro -->
+<div id="intro">
+    <div class="i-wrap">
+        <div class="i-phrase" id="ip1">CELEBRATING VISION</div>
+        <div class="i-bar"    id="ib1"></div>
+        <div class="i-phrase" id="ip2" style="margin-top:1.5rem;">CELEBRATING LEADERSHIP</div>
+        <div class="i-bar"    id="ib2"></div>
+        <div class="i-bday"   id="ip3" style="margin-top:2rem;">Happy Birthday, Beena Ma'am 🎂</div>
+    </div>
+</div>
+
+<!-- Ambient Background -->
+<div class="lray"></div>
+<div class="lray"></div>
+<div class="lray"></div>
+<canvas id="pCanvas"></canvas>
+
+<!-- ═══════════════════ PAGE ═══════════════════ -->
+<div class="page">
+
+    <!-- ══ HERO ══ -->
     <section class="hero">
-        <div class="container hero-grid">
-            <div class="hero-content">
-                <div class="welcome-badge">✦ WELCOME TO LITOS! ✦</div>
-                <h1>Driving Excellence in Every Aspect: Litos is your partner in prosperity, fostering success in every aspect of corporate life and business.</h1>
-                <div class="hero-buttons">
-                    <a href="#" class="btn-primary">Begin Your Journey →</a>
-                    <a href="#" class="btn-outline">Connect With Us</a>
-                </div>
-            </div>
-            <div class="hero-visual"></div>
-        </div>
-    </section>
-
-    <!-- Mission & Vision -->
-    <section class="mission-vision">
         <div class="container">
-            <div class="mv-grid">
-                <div class="mv-card">
-                    <div class="mv-icon"><i class="fas fa-seedling"></i></div>
-                    <h3>Our Mission</h3>
-                    <p>At Litos, our mission is to empower businesses and individuals to thrive and grow by providing tailored, innovative, and holistic solutions. We offer customized high-quality business solutions that drive success, foster personal development, create a lasting impact, and promote a culture of excellence and well-being.</p>
-                </div>
-                <div class="mv-card">
-                    <div class="mv-icon"><i class="fas fa-mountain-sun"></i></div>
-                    <h3>Our Vision</h3>
-                    <p>Guiding You to Success: Our vision is to lead businesses and individuals on a transformative journey of growth, offering a complete package of solutions that drive success and satisfaction at every turn.</p>
+            <div class="glass">
+                <div class="hero-grid">
+
+                    <!-- Portrait -->
+                    <div class="p-wrap">
+                        <div class="portrait" id="portrait">
+                            <img id="ceoImg"
+                                 src="https://res.cloudinary.com/dkj9rvy9v/image/upload/v1774980425/DSC00388_yewrkg.jpg"
+                                 alt="Beena Pinto — CEO, Litos">
+                            <div class="p-overlay"></div>
+                            <div class="p-ring"></div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div>
+                        <div class="bday-badge">
+                            <i class="fas fa-cake-candles"></i>
+                            May 15, 2026 &nbsp;·&nbsp; A Very Special Day
+                        </div>
+
+                        <div class="hb-row">
+                            <span class="hb-text">Happy Birthday</span>
+                            <div class="hb-bar"></div>
+                        </div>
+
+                        <div class="hero-name">Beena Pinto</div>
+                        <div class="ceo-tag">Chief Executive Officer &nbsp;·&nbsp; Litos</div>
+
+                        <p class="wish-p">
+                            Your vision has been our compass, your courage our foundation.
+                            The way you lead — with empathy, integrity, and an unwavering
+                            belief in every person on your team — is nothing short of
+                            extraordinary. Today we celebrate not just a birthday, but an
+                            incredible human being who makes all of us want to be better.
+                        </p>
+
+                        <div class="q-block">
+                            <p id="rotQ">"True leadership is the art of empowering others to discover their own greatness."</p>
+                        </div>
+
+                        <button class="cta" id="celebBtn">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            CELEBRATE WITH US
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services -->
-    <section class="services">
+    <!-- ══ LEGACY ══ -->
+    <section class="legacy">
         <div class="container">
-            <div class="section-header">
-                <h2>Services</h2>
-                <p>We deliver customized business transformation solutions for</p>
+            <div style="text-align:center;">
+                <span class="sec-tag">What She Stands For</span>
+                <div class="sec-title">The <em>Legacy</em> She Builds Every Day</div>
             </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                    <h3>Coaching and Counseling</h3>
-                    <p>Coaching and counseling to empower individuals to reach their full potential personally and professionally.</p>
+            <div class="pillars" id="pillarsGrid">
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-eye"></i></div>
+                    <h3>Vision</h3>
+                    <p>Seeing possibilities where others see obstacles, and inspiring the whole team to build towards what could be.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-chalkboard-user"></i></div>
-                    <h3>Corporate Training</h3>
-                    <p>Customized corporate training to empower your employees with the skills and knowledge to excel.</p>
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-shield-heart"></i></div>
+                    <h3>Integrity</h3>
+                    <p>Every decision grounded in honesty and care — earning trust not through authority, but through character.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-microchip"></i></div>
-                    <h3>IT Services Consultation</h3>
-                    <p>Expert customized IT infrastructure guidance and solutions that align with your business goals.</p>
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Excellence</h3>
+                    <p>Setting standards that challenge everyone to grow, and celebrating the milestones we reach together.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>Marketing and Business Development</h3>
-                    <p>Customized marketing and business development services to elevate your business to new heights.</p>
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-people-group"></i></div>
+                    <h3>Empathy</h3>
+                    <p>Always making time for people, understanding their journey, and lifting them higher with genuine care.</p>
+                </div>
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Innovation</h3>
+                    <p>Embracing change with confidence and turning bold new ideas into real growth for the entire organisation.</p>
+                </div>
+                <div class="pillar">
+                    <div class="p-icon"><i class="fas fa-star"></i></div>
+                    <h3>Inspiration</h3>
+                    <p>The kind of leader who doesn't just move the needle — she moves the people standing behind it.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials">
+    <!-- ══ TEAM VOICES ══ -->
+    <section class="voices">
         <div class="container">
-            <div class="section-header">
-                <h2>What Our Clients Say</h2>
+            <div style="text-align:center;">
+                <span class="sec-tag">From the Team, With Love</span>
+                <div class="sec-title">Voices of <em>Gratitude</em></div>
             </div>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <p>Very good training by Litos as it improves the skills and also adds some new skills that will help in the corporate world</p>
-                    <div class="client-name">- Nakul Khandelwal</div>
+            <div class="voices-grid" id="voicesGrid">
+                <div class="v-card">
+                    <span class="qm">"</span>
+                    <p class="v-text">Working under Beena Ma'am's leadership has genuinely transformed how I think about my work. She doesn't just manage — she believes in you before you even believe in yourself.</p>
+                    <div class="v-author">
+                        <div class="a-dot"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="a-name">Aditya Sai</div>
+                            <div class="a-role">Operations Team, Litos</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <p>Llitos has an effective techno-management leader who has helped me and our team to grow in IT domain tremendously.</p>
-                    <div class="client-name">- Reginald Christian</div>
+                <div class="v-card">
+                    <span class="qm">"</span>
+                    <p class="v-text">Ma'am has this rare ability to walk into any room and make every single person feel seen and valued. Her guidance has shaped not just our work, but our character as individuals.</p>
+                    <div class="v-author">
+                        <div class="a-dot"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="a-name">Team Litos</div>
+                            <div class="a-role">Growth &amp; Strategy</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <p>The session was very good. Litos counsellors explained each and every thing in a very easy going manner and it was very effective for our learning and corporate group counselling. With this session we got to know more about the challenges we faced everyday and how we could overcome them.</p>
-                    <div class="client-name">- Divya Singhal</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                    <p>The amount of experience and expertise Litos brings to the table for complex website issues and complexities of the data world is highly appreciable.</p>
-                    <div class="client-name">- Prakrathi Gaur</div>
+                <div class="v-card">
+                    <span class="qm">"</span>
+                    <p class="v-text">The culture at Litos — the passion, the drive, the care for each other — it all starts with her. Wishing our Ma'am the most beautiful birthday and a year as amazing as her leadership.</p>
+                    <div class="v-author">
+                        <div class="a-dot"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="a-name">Creative &amp; Dev Team</div>
+                            <div class="a-role">Design &amp; Development</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Blog with Feature Images -->
-    <section class="blog">
+    <!-- ══ CLOSING ══ -->
+    <section class="closing">
         <div class="container">
-            <div class="section-header">
-                <h2>Blog</h2>
+
+            <div class="cake-wrap">
+                <span class="cake-icon">🎂</span>
+                <div class="c-glow"></div>
             </div>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/20/600/400" alt="Mindfulness for Teens">
-                        <div class="blog-overlay"><span class="blog-category">Mindfulness</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>The Power of Mindfulness for Teens: A Guide to Stress-Relief Mindfulness is the practice of living in...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/26/600/400" alt="Tech Professionals">
-                        <div class="blog-overlay"><span class="blog-category">Wellness</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>In today's fast-paced world, tech professionals often find themselves trapped in the relentless...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/169/600/400" alt="Digital Detox">
-                        <div class="blog-overlay"><span class="blog-category">Digital Wellness</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>Digital Detox: The Secret to a Happier, Healthier Workplace In today's fast-paced corporate world, the...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/155/600/400" alt="Student Wellness">
-                        <div class="blog-overlay"><span class="blog-category">Student Life</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>Mindfulness Magic: The Ultimate Guide to Student Wellness In today's fast-paced...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/60/600/400" alt="Educators">
-                        <div class="blog-overlay"><span class="blog-category">Education</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>Unlocking the Full Potential of Educators Through Mindfulness Practices The...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/88/600/400" alt="Workplace Mindfulness">
-                        <div class="blog-overlay"><span class="blog-category">Workplace</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>Mindfulness at Workplace: Revolutionizing Interpersonal Skills Interpersonal skills, often referred...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/29/600/400" alt="Career Strategies">
-                        <div class="blog-overlay"><span class="blog-category">Career</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>4 Transformative Strategies to Get Noticed, and Land Your Dream Job Do you wonder why your associate...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/91/600/400" alt="Team Engagement">
-                        <div class="blog-overlay"><span class="blog-category">Leadership</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>11 Innovative Ways to Supercharge Engagement at Work and Team Energy In the...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <img src="https://picsum.photos/id/42/600/400" alt="Group Meditation">
-                        <div class="blog-overlay"><span class="blog-category">Meditation</span></div>
-                    </div>
-                    <div class="blog-content">
-                        <h4>Four Benefits of Group Meditation You Never Knew About! Have you ever felt the energy shift in a room...</h4>
-                        <a href="#" class="blog-link">Read more →</a>
-                    </div>
-                </div>
+
+            <div class="c-hb">Happy Birthday</div>
+            <div class="c-name">Beena Pinto Ma'am</div>
+
+            <p class="c-wish">
+                May this new chapter of your life be filled with every joy you so freely give
+                to others — boundless laughter, perfect health, beautiful moments, and the
+                quiet satisfaction of knowing your legacy has already changed lives. Here's
+                to you, Ma'am. 🥂
+            </p>
+
+            <div class="divider">
+                <span></span>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span></span>
             </div>
+
+            <div class="stars-row">
+                <i class="fas fa-star"></i>
+                <span>From the entire Litos family, with love and gratitude</span>
+                <i class="fas fa-star"></i>
+            </div>
+
         </div>
     </section>
 
-    <!-- Our Clients -->
-    <section class="clients">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Clients</h2>
-            </div>
-            <div class="clients-grid">
-                <i class="fas fa-building client-icon"></i>
-                <i class="fas fa-chart-network client-icon"></i>
-                <i class="fas fa-globe client-icon"></i>
-                <i class="fas fa-handshake client-icon"></i>
-                <i class="fas fa-industry client-icon"></i>
-                <i class="fas fa-university client-icon"></i>
-            </div>
-        </div>
-    </section>
+</div><!-- /.page -->
 
-    <!-- Outcomes We Drive -->
-    <section class="outcomes">
-        <div class="container">
-            <div class="section-header">
-                <h2>Outcomes We Drive</h2>
-            </div>
-            <div class="metrics-row">
-                <div class="metric">
-                    <div class="metric-number">85+</div>
-                    <div class="metric-label">years of combined cummulative experience</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-number">2800+</div>
-                    <div class="metric-label">Empowered 2800+ lives and businesses</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-number">255+</div>
-                    <div class="metric-label">Advised 225+ companies</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-number">25+</div>
-                    <div class="metric-label">Advised clients from 25+ countries</div>
-                </div>
-            </div>
-            <div class="outcomes-grid">
-                <div class="outcome-card">
-                    <i class="fas fa-chart-simple"></i>
-                    <h4>Strategic Business Guidance</h4>
-                    <p>We offer business consultancy services designed to enhance productivity, optimize team composition, and implement SMART goals for growth and improved efficiency.</p>
-                </div>
-                <div class="outcome-card">
-                    <i class="fas fa-brain"></i>
-                    <h4>Tailored Mindfulness Strategies</h4>
-                    <p>We offer customized mindfulness strategies that enhance focus, foster better leadership, reduce stress and anxiety, and improve work-life balance, elevating your overall well-being and effectiveness.</p>
-                </div>
-                <div class="outcome-card">
-                    <i class="fas fa-rocket"></i>
-                    <h4>Skill Empowerment</h4>
-                    <p>Our personalized corporate training programs equip your team with the skills and knowledge they need to excel, fostering productivity and innovation.</p>
-                </div>
-                <div class="outcome-card">
-                    <i class="fas fa-hand-sparkles"></i>
-                    <h4>Holistic Counseling Services</h4>
-                    <p>Our individualized coaching and counseling sessions empower individuals to realize their full potential, leading to self-fulfillment and career success.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section">
-        <div class="container">
-            <h3>Learn more about how to utilize your resources for optimal business transformation</h3>
-            <a href="#" class="btn-primary">Connect With Litos →</a>
-        </div>
-    </section>
-</main>
-
-<footer>
-    <div class="container">
-        <div class="footer-links">
-            <a href="#">Home</a> | 
-            <a href="#">About</a> | 
-            <a href="#">Services</a> | 
-            <a href="#">Blog</a> | 
-            <a href="#">Contact</a>
-        </div>
-        <div class="footer-copyright">
-            <p>Scroll to Top</p>
-            <p>&copy; 2025 LITOS - Rekindle your mind. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-<a href="#" class="scroll-top" id="scrollTop">
-    <i class="fas fa-arrow-up"></i>
-</a>
 
 <script>
-    const scrollBtn = document.getElementById('scrollTop');
-    
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 500) {
-            scrollBtn.style.display = 'flex';
-        } else {
-            scrollBtn.style.display = 'none';
-        }
-    });
-    
-    scrollBtn.style.display = 'none';
-    
-    scrollBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+gsap.registerPlugin(ScrollTrigger);
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#') {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+/* ── Loader → Intro ── */
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        gsap.to('#loader', {
+            opacity: 0, duration: 0.8,
+            onComplete: () => {
+                document.getElementById('loader').style.display = 'none';
+                runIntro();
             }
         });
-    });
-</script>
+    }, 900);
+});
 
+function runIntro() {
+    const tl = gsap.timeline();
+    tl
+      .fromTo('#ip1', { opacity:0, y:16 }, { opacity:1, y:0, duration:.9, ease:'power2.out' })
+      .to('#ib1',  { width:60, opacity:1, duration:.6, ease:'power2.out' }, '-=.3')
+      .to(['#ip1','#ib1'], { opacity:0, duration:.55 }, '+=.85')
+
+      .fromTo('#ip2', { opacity:0, y:16 }, { opacity:1, y:0, duration:.9, ease:'power2.out' })
+      .to('#ib2',  { width:60, opacity:1, duration:.6, ease:'power2.out' }, '-=.3')
+      .to(['#ip2','#ib2'], { opacity:0, duration:.55 }, '+=.85')
+
+      .fromTo('#ip3', { opacity:0, y:20, scale:.97 }, { opacity:1, y:0, scale:1, duration:1.2, ease:'power3.out' })
+      .to('#ip3', { opacity:0, duration:.9, delay:1.1 }, '+=.6')
+      .to('#intro', {
+            opacity:0, duration:1.1, ease:'power2.inOut',
+            onComplete: () => {
+                document.getElementById('intro').style.display = 'none';
+                revealPage();
+            }
+      });
+}
+
+function revealPage() {
+    gsap.from('.glass',       { opacity:0, y:35, duration:1.2, ease:'power2.out', delay:.1 });
+    gsap.from('.bday-badge',  { opacity:0, scale:.88, duration:.7, ease:'back.out(1.7)', delay:.4 });
+    gsap.from('.hb-row, .hero-name, .ceo-tag, .wish-p, .q-block, .cta', {
+        opacity:0, y:20, stagger:.1, duration:.75, ease:'power2.out', delay:.5
+    });
+
+    gsap.from('.pillar', {
+        opacity:0, y:25, stagger:.09, duration:.8,
+        scrollTrigger:{ trigger:'#pillarsGrid', start:'top 82%' }
+    });
+    gsap.from('.v-card', {
+        opacity:0, y:25, stagger:.1, duration:.8,
+        scrollTrigger:{ trigger:'#voicesGrid', start:'top 82%' }
+    });
+    gsap.from('.c-hb, .c-name, .c-wish, .divider, .stars-row', {
+        opacity:0, y:20, stagger:.12, duration:.9,
+        scrollTrigger:{ trigger:'.closing', start:'top 80%' }
+    });
+}
+
+/* ── Cursor ── */
+const cur    = document.getElementById('cur');
+const curDot = document.getElementById('curDot');
+document.addEventListener('mousemove', e => {
+    gsap.to(cur,    { x:e.clientX, y:e.clientY, duration:.28, ease:'power2.out' });
+    gsap.to(curDot, { x:e.clientX, y:e.clientY, duration:.08 });
+});
+document.querySelectorAll('.cta, .pillar, .v-card, .portrait').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('h'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('h'));
+});
+
+/* ── 3D Portrait Tilt ── */
+const portrait = document.getElementById('portrait');
+document.addEventListener('mousemove', e => {
+    const r = portrait.getBoundingClientRect();
+    gsap.to(portrait, {
+        rotationY: (e.clientX - (r.left + r.width/2))  / 28,
+        rotationX: -(e.clientY - (r.top  + r.height/2)) / 28,
+        duration:.45, ease:'power2.out', transformPerspective:1200
+    });
+});
+
+/* ── Quote Rotator ── */
+const quotes = [
+    '"True leadership is the art of empowering others to discover their own greatness."',
+    '"A visionary sees not what is, but what could be — and inspires others to build it."',
+    '"Grace under pressure, wisdom in action — that is the hallmark of exceptional leadership."',
+    '"The greatest leaders don\'t create followers — they create more leaders."',
+    '"She doesn\'t just set the bar, she lifts everyone else up to reach it."'
+];
+let qi = 0;
+const qEl = document.getElementById('rotQ');
+setInterval(() => {
+    qi = (qi + 1) % quotes.length;
+    gsap.to(qEl, {
+        opacity:0, duration:.35,
+        onComplete: () => {
+            qEl.textContent = quotes[qi];
+            gsap.to(qEl, { opacity:1, duration:.55 });
+        }
+    });
+}, 5000);
+
+/* ── Celebrate Button: Gold Confetti ── */
+document.getElementById('celebBtn').addEventListener('click', () => {
+    gsap.to('#celebBtn', { scale:.95, duration:.1, yoyo:true, repeat:1 });
+    const cols = ['#d4af37','#f5e6b0','#fff4b8','#e8c547','#f0d060','#c8960c','#fffae0'];
+    for (let i = 0; i < 90; i++) {
+        const p  = document.createElement('div');
+        const sz = Math.random() > .5;
+        Object.assign(p.style, {
+            position:'fixed', pointerEvents:'none', zIndex:'99990',
+            width: sz ? '6px' : '4px',
+            height: sz ? '6px' : '11px',
+            borderRadius: sz ? '50%' : '1px',
+            background: cols[Math.floor(Math.random() * cols.length)],
+            left:'50%', top:'52%', opacity:1
+        });
+        document.body.appendChild(p);
+        gsap.to(p, {
+            x: (Math.random() - .5) * 540,
+            y: (Math.random() - .5) * 380 - 80,
+            rotation: Math.random() * 720,
+            opacity: 0,
+            duration: 1.4 + Math.random() * .7,
+            ease: 'power2.out',
+            onComplete: () => p.remove()
+        });
+    }
+});
+
+/* ── Particle System ── */
+const canvas = document.getElementById('pCanvas');
+const ctx    = canvas.getContext('2d');
+let W = window.innerWidth, H = window.innerHeight, particles = [];
+
+function resizeCanvas() {
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+}
+
+class Dot {
+    constructor() {
+        this.x  = Math.random() * W;
+        this.y  = Math.random() * H;
+        this.r  = Math.random() * 1.8 + .3;
+        this.vx = (Math.random() - .5) * .12;
+        this.vy = (Math.random() - .5) * .09;
+        this.a  = Math.random() * .25 + .05;
+        if (Math.random() < .08) { this.r *= 2; this.a += .2; } // occasional bright star
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0) this.x = W; if (this.x > W) this.x = 0;
+        if (this.y < 0) this.y = H; if (this.y > H) this.y = 0;
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212,175,55,${this.a})`;
+        ctx.fill();
+    }
+}
+
+function initP() { particles = Array.from({length:90}, () => new Dot()); }
+function loop()  {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+}
+
+resizeCanvas(); initP(); loop();
+window.addEventListener('resize', () => { resizeCanvas(); initP(); });
+
+/* ── Image Fallback ── */
+document.getElementById('ceoImg').addEventListener('error', function() {
+    this.src = 'https://placehold.co/600x800/0a0c14/d4af37?text=Beena+Pinto&font=playfair-display';
+});
+</script>
 </body>
 </html>
